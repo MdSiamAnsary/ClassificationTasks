@@ -1,0 +1,5 @@
+Spam Email [Dataset1]: https://www.kaggle.com/datasets/mfaisalqureshi/spam-email
+
+Spam Classification for Basic NLP [Dataset2]: https://www.kaggle.com/datasets/chandramoulinaidu/spam-classification-for-basic-nlp
+
+Email Spam Dataset [Dataset3]: https://www.kaggle.com/datasets/nitishabharathi/email-spam-dataset
