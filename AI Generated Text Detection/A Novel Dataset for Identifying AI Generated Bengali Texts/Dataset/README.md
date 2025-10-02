@@ -1,4 +1,4 @@
-# A Novel Dataset for Identifying AI Generated Bengali Texts
+## A Novel Dataset for Identifying AI Generated Bengali Texts
 
 ### Dataset Description:
 * 50% Human written texts (300) - Collected from various sources 
