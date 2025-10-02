@@ -16,4 +16,7 @@
   * Short Stories – 5%
   * Office Orders – 1%
 
+### When you use any resources from this repository, you are requested to cite the following paper. 
+M. S. Ansary, "A Novel Dataset for Identifying AI Generated Bengali Texts," 2025 International Conference on Quantum Photonics, Artificial Intelligence, and Networking (QPAIN), Rangpur, Bangladesh, 2025, pp. 1-4, doi: 10.1109/QPAIN66474.2025.11171930.
+
  
