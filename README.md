@@ -15,5 +15,10 @@
 [[Research Paper](https://www.ijcaonline.org/archives/volume187/number24/machine-learning-based-detection-of-spear-phishing-emails/)]
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Spear%20Phishing%20Email%20Detection/Machine%20Learning%20Based%20Detection%20of%20Spear%20Phishing%20Emails)]
 
+### Structural Damage Detection
+- Ansary, Md Siam, and Awaleen Nawar Suha. "Structural Damage Detection in Civil Infrastructures." European Journal of Electrical Engineering and Computer Science 9, no. 6 (2025): 7-11.
+[[Research Paper](https://ejece.org/index.php/ejece/article/view/758)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Structural%20Damage%20Detection/Structural%20Damage%20Detection%20in%20Civil%20Infrastructures)]
+
 
  
