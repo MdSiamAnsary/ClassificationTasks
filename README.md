@@ -16,6 +16,9 @@
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Spear%20Phishing%20Email%20Detection/Machine%20Learning%20Based%20Detection%20of%20Spear%20Phishing%20Emails)]
 
 ### Structural Damage Detection
+- _Ansary, Md. Siam_, "__Transfer Learning With CLIP for Intelligent Concrete Crack Detection in Structural Health Monitoring__", Shock and Vibration, 2026, 4194403, 10 pages, 2026. https://doi.org/10.1155/vib/4194403
+[[Research Paper](https://onlinelibrary.wiley.com/doi/10.1155/vib/4194403)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Structural%20Damage%20Detection/Transfer%20Learning%20with%20CLIP%20for%20Intelligent%20Concrete%20Crack%20Detection%20in%20Structural%20Health%20Monitoring)]
 - _Ansary, Md Siam_, and Awaleen Nawar Suha. "__Structural Damage Detection in Civil Infrastructures__." European Journal of Electrical Engineering and Computer Science 9, no. 6 (2025): 7-11.
 [[Research Paper](https://ejece.org/index.php/ejece/article/view/758)]
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Structural%20Damage%20Detection/Structural%20Damage%20Detection%20in%20Civil%20Infrastructures)]
