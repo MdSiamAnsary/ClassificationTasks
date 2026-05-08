@@ -10,6 +10,12 @@
 [[Dataset](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/A%20Novel%20Dataset%20for%20Identifying%20AI%20Generated%20Bengali%20Texts/Dataset)]
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/A%20Novel%20Dataset%20for%20Identifying%20AI%20Generated%20Bengali%20Texts)]
 
+- M. S. Ansary, "__Stacking Ensemble Approach for AI Generated Text Detection with Appropriate Feature Selection__," 2025 IEEE 4th International Conference on Robotics, Automation, Artificial-Intelligence and Internet-of-Things (RAAICON), Dhaka, Bangladesh, 2025, pp. 7-12, doi: 10.1109/RAAICON69033.2025.11502163.
+[[Research Paper](https://ieeexplore.ieee.org/document/11502163)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/Stacking%20Ensemble%20Approach%20for%20AI%20Generated%20Text%20Detection%20with%20Appropriate%20Feature%20Selection)]
+
+
+
 ### Spear Phishing Email Detection [[Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Spear%20Phishing%20Email%20Detection/)]
 - _Ansary, Md Siam_. "__Machine Learning-based Detection of Spear Phishing Emails__." International Journal of Computer Applications 975: 8887.
 [[Research Paper](https://www.ijcaonline.org/archives/volume187/number24/machine-learning-based-detection-of-spear-phishing-emails/)]
