@@ -14,6 +14,10 @@
 [[Research Paper](https://ieeexplore.ieee.org/document/11502163)]
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/Stacking%20Ensemble%20Approach%20for%20AI%20Generated%20Text%20Detection%20with%20Appropriate%20Feature%20Selection)]
 
+- M. S. Ansary, "__MISTY: Multidimensional Identification of Synthetic Text Yield__," 2025 IEEE International Conference on Signal Processing, Information, Communication and Systems (SPICSCON), Rajshahi, Bangladesh, 2025, pp. 733-737, doi: 10.1109/SPICSCON69221.2025.11504262.
+[[Research Paper](https://ieeexplore.ieee.org/document/11504262)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/MISTY%20Multidimensional%20Identification%20of%20Synthetic%20Text%20Yield)]
+
 
 
 ### Spear Phishing Email Detection [[Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Spear%20Phishing%20Email%20Detection/)]
