@@ -18,6 +18,14 @@
 [[Research Paper](https://ieeexplore.ieee.org/document/11504262)]
 [[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/MISTY%20Multidimensional%20Identification%20of%20Synthetic%20Text%20Yield)]
 
+- _Md. Siam Ansary_, __A Multirepresentation Stacked Ensemble for AI-Generated Text Detection__, International Journal of Intelligent Systems, 2026, 3992539, 13 pages, 2026. https://doi.org/10.1155/int/3992539
+[[Research Paper](https://onlinelibrary.wiley.com/doi/10.1155/int/3992539)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/A%20Multirepresentation%20Stacked%20Ensemble%20for%20AI%E2%80%90Generated%20Text%20Detection)]
+
+- _M. S. Ansary_, "__Identifying AI Generated Scientific Abstracts using Quantum Machine Learning__," in Proc. Int. Conf. Intelligent Data Analysis and Applications (IDAA 2025), Atlantis Press, Jun. 2026, pp. 1027–1039, doi: 10.2991/978-94-6239-664-7_70.
+[[Research Paper](https://www.atlantis-press.com/proceedings/idaa-25/126024889)]
+[[GitHub Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/AI%20Generated%20Text%20Detection/Identifying%20AI%20Generated%20Scientific%20Abstracts%20using%20Quantum%20Machine%20Learning)]
+
 
 
 ### Spear Phishing Email Detection [[Repository](https://github.com/MdSiamAnsary/ClassificationTasks/tree/main/Spear%20Phishing%20Email%20Detection/)]
