@@ -2,6 +2,8 @@
 
 **"Detection of Bangla AI-Generated Texts Using a Quantum Kernel Support Vector Machine", *Applied AI Letters* 7:e70051 (2026), doi:10.1002/ail2.70051**.
 
+The tables after each code block show the values reported in the paper.
+
 
 
 ## Environment & configuration
@@ -81,7 +83,7 @@ print("\nMedian length per genre:\n",
       df.assign(len=lengths).groupby("Type")["len"].median().reindex(GENRE_ORDER))
 ```
 
-
+**Table 1**
 
 | Genre | Texts | % of corpus |
 |---|---|---|
@@ -530,11 +532,11 @@ table2.to_csv(os.path.join(OUT_DIR, "table2_holdout.csv"))
 
 ## 5-fold stratified cross-validation 
 
-PCA and the scaler are **refit inside every fold**. The QSVM uses the exact NumPy kernel here, which is equivalent to `default.qubit`. Pooled out-of-fold predictions are kept for the per-genre analysis (§11) and Fig. 3b.
+PCA and the scaler are **refit inside every fold**. The QSVM uses the PennyLane `default.qubit` kernel (or the mathematically equivalent exact NumPy kernel). Pooled out-of-fold predictions are kept for the per-genre analysis and Fig. 3b.
 
 ```python
 cv_bert = {}
-for name, factory in make_models(qsvm_kernel=qkernel_matrix_np).items():
+for name, factory in make_models(qsvm_kernel=qkernel_matrix_pl).items():   # or qkernel_matrix_np
     t0 = time.time()
     cv_bert[name] = run_cv(bert_features, factory)
     print(f"{name:22s} {fmt_cv(cv_bert[name])}   ({time.time() - t0:.1f}s)")
