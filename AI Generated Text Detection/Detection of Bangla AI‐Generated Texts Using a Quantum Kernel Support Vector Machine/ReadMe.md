@@ -1,6 +1,6 @@
 # Detection of Bangla AI-Generated Texts Using a Quantum Kernel SVM 
 
-"Detection of Bangla AI-Generated Texts Using a Quantum Kernel Support Vector Machine", *Applied AI Letters* 7:e70051 (2026), doi:10.1002/ail2.70051**.
+**"Detection of Bangla AI-Generated Texts Using a Quantum Kernel Support Vector Machine", *Applied AI Letters* 7:e70051 (2026), doi:10.1002/ail2.70051**.
 
 
 
