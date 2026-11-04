@@ -19,17 +19,17 @@ import torch
 warnings.filterwarnings("ignore")
 
 # ---------------- Configuration ----------------
-SEED            = 42                         # random_state = 42 throughout (§5)
+SEED            = 42                         # random_state = 42 throughout
 DATA_PATH       = "dataset.csv"              # columns: SL, Text, Type, Source, Category, Label
 BANGLABERT_PATH = "csebuetnlp/banglabert"    # or a local directory with the weights
-N_QUBITS        = 8                          # = number of PCA components (§4.3)
-MAX_LEN         = 128                        # BanglaBERT truncation length (§4.2)
-TEST_SIZE       = 0.20                       # 480 train / 120 test (§5)
+N_QUBITS        = 8                          # = number of PCA components
+MAX_LEN         = 128                        # BanglaBERT truncation length
+TEST_SIZE       = 0.20                       # 480 train / 120 test
 N_FOLDS         = 5
 OUT_DIR         = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# Paper: all models were run on a single CPU core (§5)
+# Paper: all models were run on a single CPU core
 torch.set_num_threads(1)
 
 def set_seed(seed: int = SEED):
@@ -48,7 +48,7 @@ set_seed()
 df = pd.read_csv(DATA_PATH)
 df["Text"] = df["Text"].astype(str)
 
-# §3: no records had missing text or label, so no rows were removed
+# The paper reports no missing text or label, so no rows were removed
 assert df[["Text", "Label"]].isna().sum().sum() == 0
 print("Shape:", df.shape)
 
@@ -61,14 +61,14 @@ GENRE_ORDER = ["Newspaper Article", "Scientific Abstract", "Email",
 # ---- Class balance ----
 print("\nClass balance:\n", df["Category"].value_counts(normalize=True).mul(100).round(1))
 
-# ---- Table 1: genre distribution ----
-table1 = (df["Type"].value_counts()
+# ---- Genre distribution ----
+genre_table = (df["Type"].value_counts()
             .reindex(GENRE_ORDER)
             .rename("Texts")
             .to_frame())
-table1["% of corpus"] = (100 * table1["Texts"] / len(df)).round(1)
-table1.loc["Total"] = [table1["Texts"].sum(), 100.0]
-print("\nTable 1 — Genre distribution\n", table1)
+genre_table["% of corpus"] = (100 * genre_table["Texts"] / len(df)).round(1)
+genre_table.loc["Total"] = [genre_table["Texts"].sum(), 100.0]
+print("\nGenre distribution\n", genre_table)
 
 # Each genre is split 50/50 between HWT and AGT
 print("\nGenre × class:\n", pd.crosstab(df["Type"], df["Category"]).reindex(GENRE_ORDER))
@@ -81,7 +81,7 @@ print("\nMedian length per genre:\n",
       df.assign(len=lengths).groupby("Type")["len"].median().reindex(GENRE_ORDER))
 ```
 
-**Table 1**
+**Genre distribution of the dataset (each genre is split 50/50 between HWT and AGT)**
 
 | Genre | Texts | % of corpus |
 |---|---|---|
@@ -203,13 +203,13 @@ def tfidf_features(tr_idx, te_idx):
     Xtr8, Xte8, _ = fit_reduce(Xtr, Xte)
     return Xtr8, Xte8
 
-# ---- Held-out split (§5): 480 train / 120 test, stratified, seed 42 ----
+# ---- Held-out split: 480 train / 120 test, stratified, seed 42 ----
 all_idx = np.arange(len(df))
 tr_idx, te_idx = train_test_split(all_idx, test_size=TEST_SIZE, stratify=y, random_state=SEED)
 print("Train / test:", len(tr_idx), len(te_idx),
       "| test class balance:", np.bincount(y[te_idx]))
 
-# ---- Retained variance of 8 PCs (descriptive, §4.3 / §6.3) ----
+# ---- Retained variance of 8 PCs (descriptive) ----
 pca_bert_full = PCA(n_components=N_QUBITS, random_state=SEED).fit(X_bert)
 print(f"BanglaBERT: 8 PCs retain {100 * pca_bert_full.explained_variance_ratio_.sum():.1f}% variance")
 
@@ -232,11 +232,11 @@ Split: **480 train / 120 test**, 60 / 60 per class in the test set.
 
 ## Quantum feature map & fidelity kernel 
 
-Feature map on 8 qubits starting from |0⟩^⊗8 (Eq. 1):
+Feature map on 8 qubits starting from |0⟩^⊗8:
 
 $$U(x) = \mathrm{AE}_Z(x)\cdot\prod_{i=0}^{7}\mathrm{CZ}\big(i,(i+1)\bmod 8\big)\cdot\mathrm{AE}_Y(x)$$
 
-Kernel (Eq. 2): $K(x_1,x_2)=\left|\langle 0|^{\otimes 8}U^\dagger(x_2)U(x_1)|0\rangle^{\otimes 8}\right|^2$
+Fidelity kernel: $K(x_1,x_2)=\left|\langle 0|^{\otimes 8}U^\dagger(x_2)U(x_1)|0\rangle^{\otimes 8}\right|^2$
 
 Two equivalent implementations are given:
 - **PennyLane `default.qubit`** (v0.45.1), used for the main held-out results. It runs batched with parameter broadcasting and computes only the upper triangle of the symmetric train–train matrix.
@@ -497,18 +497,18 @@ for name, factory in make_models(qsvm_kernel=qkernel_matrix_pl).items():
 q = holdout_bert["QSVM"]["model"]
 print(f"\nQSVM kernel time: train-train {q.kernel_time_train_:.1f}s, test-train {q.kernel_time_test_:.1f}s")
 
-table2 = pd.DataFrame({k: {m: v["metrics"][m] for m in ["Acc.", "Prec.", "Rec.", "F1", "AUC"]}
+holdout_table = pd.DataFrame({k: {m: v["metrics"][m] for m in ["Acc.", "Prec.", "Rec.", "F1", "AUC"]}
                        for k, v in holdout_bert.items()}).T.round(3)
-table2 = table2.loc[["Logistic Regression", "Classical SVM (RBF)", "VQC", "QSVM"]]
-print("\nTable 2 — Held-out test performance (BanglaBERT, 8 qubits / 8 PCs)\n", table2)
+holdout_table = holdout_table.loc[["Logistic Regression", "Classical SVM (RBF)", "VQC", "QSVM"]]
+print("\nHeld-out test performance (BanglaBERT, 8 qubits / 8 PCs)\n", holdout_table)
 
 for name in ["QSVM", "VQC", "Logistic Regression", "Classical SVM (RBF)"]:
     print(f"\nConfusion matrix — {name} (rows true HWT/AGT, cols predicted HWT/AGT)\n",
           holdout_bert[name]["metrics"]["CM"])
-table2.to_csv(os.path.join(OUT_DIR, "table2_holdout.csv"))
+holdout_table.to_csv(os.path.join(OUT_DIR, "holdout_results.csv"))
 ```
 
-**Table 2**
+**Held-out test performance (BanglaBERT features, 8 qubits / 8 PCA components)**
 
 | Model | Acc. | Prec. | Rec. | F1 | AUC | Correct / 120 |
 |---|---|---|---|---|---|---|
@@ -519,12 +519,12 @@ table2.to_csv(os.path.join(OUT_DIR, "table2_holdout.csv"))
 
 **Confusion matrices** (rows = true HWT, AGT; columns = predicted HWT, AGT)
 
-| Model | Matrix | Source |
-|---|---|---|
-| QSVM | `[[57, 3], [3, 57]]` (TN 57, FP 3, FN 3, TP 57) | Fig. 2 |
-| VQC | `[[53, 7], [8, 52]]` (TN 53, FP 7, FN 8, TP 52) | Fig. 2 |
-| Logistic Regression | `[[57, 3], [2, 58]]` | derived from Table 2 |
-| Classical SVM (RBF) | `[[57, 3], [5, 55]]` | derived from Table 2 |
+| Model | Matrix |
+|---|---|
+| QSVM | `[[57, 3], [3, 57]]` (TN 57, FP 3, FN 3, TP 57) |
+| VQC | `[[53, 7], [8, 52]]` (TN 53, FP 7, FN 8, TP 52) |
+| Logistic Regression | `[[57, 3], [2, 58]]` |
+| Classical SVM (RBF) | `[[57, 3], [5, 55]]` |
 
 ---
 
@@ -540,20 +540,20 @@ for name, factory in make_models(qsvm_kernel=qkernel_matrix_pl).items():   # or 
     print(f"{name:22s} {fmt_cv(cv_bert[name])}   ({time.time() - t0:.1f}s)")
 
 rows = ["QSVM", "Logistic Regression", "Classical SVM (RBF)", "VQC"]
-table3 = pd.DataFrame(
+cv_table = pd.DataFrame(
     [[*np.round(cv_bert[r]["folds"], 3), fmt_cv(cv_bert[r])] for r in rows],
     index=rows, columns=["F1", "F2", "F3", "F4", "F5", "Mean ± SD"])
-print("\nTable 3 — 5-fold stratified CV accuracy (population SD)\n", table3)
+print("\n5-fold stratified CV accuracy (population SD)\n", cv_table)
 
 # Per-fold QSVM-vs-VQC margin (paper: QSVM better in every fold, by 7.5-12.5 points)
 margin = 100 * (cv_bert["QSVM"]["folds"] - cv_bert["VQC"]["folds"])
 print("\nQSVM − VQC per fold (points):", np.round(margin, 1))
 print("QSVM worst fold:", cv_bert["QSVM"]["folds"].min().round(3),
       "| VQC mean:", cv_bert["VQC"]["mean"].round(3))
-table3.to_csv(os.path.join(OUT_DIR, "table3_cv.csv"))
+cv_table.to_csv(os.path.join(OUT_DIR, "cv_results.csv"))
 ```
 
-**Table 3**
+**5-fold stratified cross-validation accuracy (mean ± population SD over the five folds)**
 
 | Model | F1 | F2 | F3 | F4 | F5 | Mean ± SD |
 |---|---|---|---|---|---|---|
@@ -586,7 +586,7 @@ for name, factory in make_models(qsvm_kernel=qkernel_matrix_np, include_vqc=Fals
     cv_tfidf[name] = run_cv(tfidf_features, factory)
     print(f"CV {name:22s} {fmt_cv(cv_tfidf[name])}")
 
-# ---- Assemble Table 4 ----
+# ---- Assemble the ablation table ----
 rows = []
 for name in ["QSVM", "VQC", "Logistic Regression", "Classical SVM (RBF)"]:
     for feat, ho, cv in [("BanglaBERT", holdout_bert, cv_bert), ("TF-IDF", holdout_tfidf, cv_tfidf)]:
@@ -598,12 +598,12 @@ for name in ["QSVM", "VQC", "Logistic Regression", "Classical SVM (RBF)"]:
             "AUC": "n/a" if is_vqc_tfidf else round(m["AUC"], 3),      # paper reports n/a
             "5-fold CV Acc.": fmt_cv(cv[name]) if name in cv else "n/a",
         })
-table4 = pd.DataFrame(rows)
-print("\nTable 4 — Feature-extractor ablation\n", table4.to_string(index=False))
-table4.to_csv(os.path.join(OUT_DIR, "table4_ablation.csv"), index=False)
+ablation_table = pd.DataFrame(rows)
+print("\nFeature-extractor ablation\n", ablation_table.to_string(index=False))
+ablation_table.to_csv(os.path.join(OUT_DIR, "ablation_results.csv"), index=False)
 ```
 
-**Table 4**
+**Feature-extractor ablation: BanglaBERT vs TF-IDF (8 qubits / 8 PCA components; held-out split and 5-fold cross-validation; VQC on TF-IDF evaluated on the held-out split only)**
 
 | Model | Features | Acc. | AGT Rec. | AUC | 5-fold CV Acc. |
 |---|---|---|---|---|---|
@@ -641,18 +641,18 @@ def per_genre_table(cv_results, model_names=("QSVM", "Logistic Regression", "Cla
         rows.append(row)
     return pd.DataFrame(rows)
 
-table5 = per_genre_table(cv_bert)
-print("Table 5 — Per-genre accuracy, % (95% Wilson interval)\n")
-print(table5[["Genre", "n", "QSVM", "Logistic Regression", "Classical SVM (RBF)"]].to_string(index=False))
-print("\nRaw counts:\n", table5[["Genre", "QSVM correct", "Logistic Regression correct",
+genre_acc_table = per_genre_table(cv_bert)
+print("Per-genre accuracy, % (95% Wilson interval)\n")
+print(genre_acc_table[["Genre", "n", "QSVM", "Logistic Regression", "Classical SVM (RBF)"]].to_string(index=False))
+print("\nRaw counts:\n", genre_acc_table[["Genre", "QSVM correct", "Logistic Regression correct",
                                 "Classical SVM (RBF) correct"]].to_string(index=False))
 
 # Pooled OOF accuracy overall = mean of the five equal-size folds
 print("\nQSVM pooled OOF accuracy:", accuracy_score(y, cv_bert["QSVM"]["oof_pred"]).round(4))
-table5.to_csv(os.path.join(OUT_DIR, "table5_per_genre.csv"), index=False)
+genre_acc_table.to_csv(os.path.join(OUT_DIR, "per_genre_results.csv"), index=False)
 ```
 
-**Table 5**
+**Per-genre accuracy, % (95% Wilson interval), from pooled out-of-fold predictions (BanglaBERT features)**
 
 | Genre | n | QSVM | LR | RBF-SVM |
 |---|---|---|---|---|
@@ -669,7 +669,7 @@ table5.to_csv(os.path.join(OUT_DIR, "table5_per_genre.csv"), index=False)
 
 ---
 
-## Figures 2, 3 and 4
+## Figures
 
 ```python
 import matplotlib.pyplot as plt
@@ -677,38 +677,38 @@ from sklearn.metrics import roc_curve, ConfusionMatrixDisplay
 
 LABELS = ["HWT", "AGT"]
 
-# ---- Figure 2: confusion matrices on the 120-sample held-out split ----
+# ---- Confusion matrices of the QSVM and VQC on the 120-sample held-out split ----
 fig, axes = plt.subplots(1, 2, figsize=(9, 4))
 for ax, name, title in zip(axes, ["QSVM", "VQC"], ["QSVM", "VQC"]):
     ConfusionMatrixDisplay(holdout_bert[name]["metrics"]["CM"], display_labels=LABELS).plot(
         ax=ax, cmap="Blues", colorbar=False, values_format="d")
     ax.set_title(title); ax.set_xlabel("Predicted class"); ax.set_ylabel("True class")
-plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "fig2_confusion_matrices.png"), dpi=300); plt.show()
+plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "confusion_matrices.png"), dpi=300); plt.show()
 
-# ---- Figure 3: ROC curves for QSVM, LR, RBF-SVM (VQC omitted, as in the paper) ----
+# ---- ROC curves for QSVM, LR, RBF-SVM (VQC omitted, as in the paper) ----
 ROC_MODELS = {"QSVM": "QSVM", "Logistic Regression": "LR", "Classical SVM (RBF)": "RBF-SVM"}
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
 
-# (a) held-out split
+# held-out split
 for name, short in ROC_MODELS.items():
     s = holdout_bert[name]["score"]
     fpr, tpr, _ = roc_curve(y[te_idx], s)
     axes[0].plot(fpr, tpr, label=f"{short} (AUC = {roc_auc_score(y[te_idx], s):.3f})")
-axes[0].set_title("(a) Held-out split")
+axes[0].set_title("Held-out split")
 
-# (b) pooled out-of-fold predictions of the 5-fold protocol
+# pooled out-of-fold predictions of the 5-fold protocol
 for name, short in ROC_MODELS.items():
     s = cv_bert[name]["oof_score"]
     fpr, tpr, _ = roc_curve(y, s)
     axes[1].plot(fpr, tpr, label=f"{short} (AUC = {roc_auc_score(y, s):.3f})")
-axes[1].set_title("(b) Pooled out-of-fold (5-fold)")
+axes[1].set_title("Pooled out-of-fold (5-fold)")
 
 for ax in axes:
     ax.plot([0, 1], [0, 1], "k--", lw=0.8)
     ax.set_xlabel("False positive rate"); ax.set_ylabel("True positive rate"); ax.legend(loc="lower right")
-plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "fig3_roc_curves.png"), dpi=300); plt.show()
+plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "roc_curves.png"), dpi=300); plt.show()
 
-# ---- Figure 4: held-out accuracy, F1 and ROC-AUC of the four models ----
+# ---- Held-out accuracy, F1 and ROC-AUC of the four models ----
 order  = ["Logistic Regression", "Classical SVM (RBF)", "VQC", "QSVM"]
 metrics_to_plot = ["Acc.", "F1", "AUC"]
 x = np.arange(len(order)); w = 0.25
@@ -720,45 +720,45 @@ for i, m in enumerate(metrics_to_plot):
 ax.set_xticks(x); ax.set_xticklabels(["LR", "RBF-SVM", "VQC", "QSVM"])
 ax.set_ylim(0.80, 1.00)                                  # vertical axis starts at 0.80 (paper)
 ax.set_ylabel("Score"); ax.legend(ncol=3, loc="upper left")
-plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "fig4_summary_bars.png"), dpi=300); plt.show()
+plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR, "summary_bars.png"), dpi=300); plt.show()
 ```
 
 
 
-- **Fig. 2**: QSVM `[[57, 3], [3, 57]]`; VQC `[[53, 7], [8, 52]]`
-- **Fig. 3a** (held-out AUC): QSVM 0.989, RBF-SVM 0.987, LR 0.972. The VQC is omitted because its per-sample scores were not retained in the original run; its held-out AUC is 0.943
-- **Fig. 3b**: pooled out-of-fold ROC for the same three models (the paper gives no AUC values)
-- **Fig. 4**: held-out accuracy, F1 and AUC from Table 2, y-axis starting at 0.80
+- **Confusion matrices (held-out split)**: QSVM `[[57, 3], [3, 57]]`; VQC `[[53, 7], [8, 52]]`
+- **ROC curves, held-out split** (AUC): QSVM 0.989, RBF-SVM 0.987, LR 0.972. The VQC is omitted because its per-sample scores were not retained in the original run; its held-out AUC is 0.943
+- **ROC curves, pooled out-of-fold predictions**: the same three models (the paper gives no AUC values)
+- **Summary bar chart**: held-out accuracy, F1 and ROC-AUC of the four models, y-axis starting at 0.80
 
 ---
 
 ## Comparison with existing literature on the same dataset 
 
-These baselines come from the paper that introduced the dataset (Ansary, QPAIN 2025, ref. [11]). They were trained under **a different protocol** (70/30 split, stratified for SVM and KNN only, no PCA restriction), so this is **not re-run**. The values are listed for reference next to the QSVM result from this run.
+These baselines come from the paper that introduced the dataset (Ansary, QPAIN 2025). They were trained under **a different protocol** (70/30 split, stratified for SVM and KNN only, no PCA restriction), so this is **not re-run**. The values are listed for reference next to the QSVM result from this run.
 
 ```python
-table6 = pd.DataFrame([
-    ["Multinomial Naive Bayes [11]",   "TF-IDF",                               0.742, 0.869, 0.521, 0.465],
-    ["Random Forest [11]",             "TF-IDF",                               0.753, 0.874, 0.542, 0.505],
-    ["SVM (polynomial, degree 6) [11]","TF-IDF",                               0.764, 0.382, 0.500, 0.433],
-    ["KNN (k = 15) [11]",              "TF-IDF",                               0.809, 0.737, 0.694, 0.710],
-    ["CNN–LSTM [11]",                  "BanglaBERT embeddings",                0.764, 0.382, 0.500, 0.433],
-    ["Fine-tuned BanglaBERT [11]",     "BanglaBERT (fine-tuned)",              0.955, 0.972, 0.905, 0.933],
+literature_table = pd.DataFrame([
+    ["Multinomial Naive Bayes",        "TF-IDF",                               0.742, 0.869, 0.521, 0.465],
+    ["Random Forest",                  "TF-IDF",                               0.753, 0.874, 0.542, 0.505],
+    ["SVM (polynomial, degree 6)",     "TF-IDF",                               0.764, 0.382, 0.500, 0.433],
+    ["KNN (k = 15)",                   "TF-IDF",                               0.809, 0.737, 0.694, 0.710],
+    ["CNN–LSTM",                       "BanglaBERT embeddings",                0.764, 0.382, 0.500, 0.433],
+    ["Fine-tuned BanglaBERT",          "BanglaBERT (fine-tuned)",              0.955, 0.972, 0.905, 0.933],
 ], columns=["Model", "Features", "Accuracy", "Precision", "Recall", "F1-score"])
 
 # Macro-averaged metrics for the QSVM from this run (held-out split)
 yt, yp = y[te_idx], holdout_bert["QSVM"]["pred"]
-table6.loc[len(table6)] = ["QSVM (proposed, this run)", "BanglaBERT + PCA(8) + quantum kernel",
+literature_table.loc[len(literature_table)] = ["QSVM (proposed, this run)", "BanglaBERT + PCA(8) + quantum kernel",
                            round(accuracy_score(yt, yp), 3),
                            round(precision_score(yt, yp, average="macro"), 3),
                            round(recall_score(yt, yp, average="macro"), 3),
                            round(f1_score(yt, yp, average="macro"), 3)]
-print("Table 6 — Comparison with baselines on the same dataset (macro-averaged)\n",
-      table6.to_string(index=False))
-table6.to_csv(os.path.join(OUT_DIR, "table6_literature.csv"), index=False)
+print("Comparison with baselines on the same dataset (macro-averaged)\n",
+      literature_table.to_string(index=False))
+literature_table.to_csv(os.path.join(OUT_DIR, "literature_comparison.csv"), index=False)
 ```
 
-QSVM (proposed) **0.950 / 0.950 / 0.950 / 0.950** (Acc / Prec / Rec / F1). Fine-tuned BanglaBERT [11] is the strongest at 0.955 accuracy and 0.933 F1.
+QSVM (proposed) **0.950 / 0.950 / 0.950 / 0.950** (Acc / Prec / Rec / F1). Fine-tuned BanglaBERT (Ansary, QPAIN 2025) is the strongest at 0.955 accuracy and 0.933 F1.
 
 ---
 
