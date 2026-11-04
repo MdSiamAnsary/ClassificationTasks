@@ -762,7 +762,7 @@ QSVM (proposed) **0.950 / 0.950 / 0.950 / 0.950** (Acc / Prec / Rec / F1). Fine-
 
 ---
 
-## 14. Results 
+## Results 
 
 | Experiment | Key reported values |
 |---|---|
