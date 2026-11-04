@@ -530,7 +530,7 @@ table2.to_csv(os.path.join(OUT_DIR, "table2_holdout.csv"))
 
 ## 5-fold stratified cross-validation 
 
-PCA and the scaler are **refit inside every fold**. The QSVM uses the PennyLane `default.qubit` kernel (or the mathematically equivalent exact NumPy kernel). Pooled out-of-fold predictions are kept for the per-genre analysis and Fig. 3b.
+PCA and the scaler are **refit inside every fold**. QSVM uses the PennyLane default.qubit kernel, with the NumPy kernel as an equivalent option. Pooled out-of-fold predictions are kept for the per-genre analysis.
 
 ```python
 cv_bert = {}
